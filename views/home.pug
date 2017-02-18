@@ -1,0 +1,62 @@
+extends layout
+
+block content
+	.container
+		.row
+			.col-lg-12
+				div
+					div
+						.row
+							.col-sm-5.pull-right(style='display:flex')
+								form.form-horizontal(method='POST')
+									input(type='hidden', name='_csrf', value=_csrf)
+									.input-group
+										input.input-sm.form-control(type='text', name='search_term', placeholder='Search Company in APIs')
+										| &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;
+										span.input-group-btn
+											button.btn.btn-sm.btn-primary(type='submit')  Search
+								| &nbsp;
+								| &#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;
+								a(href="javascript:saveCompanies();").btn.btn-sm.btn-warning.pull-right  Add To Database
+						br
+						label Company Name : #{search_term}
+						if cr_companies
+							input(type='hidden', id='cr_size', value=cr_companies.length)
+						if oc_companies
+							input(type='hidden', id='oc_size', value=oc_companies.length)
+						.row
+							.col-lg-6
+								.ibox-content
+									input#filter.form-control.input-sm.m-b-xs(type='text', placeholder='Search in result')
+									table.footable.table.table-stripped(data-page-size='15', data-filter='#filter')
+										thead
+											tr
+												th(style='width:8%;')
+												th Company
+										tbody
+											if cr_companies
+												each company, i in cr_companies
+													tr.gradeX
+														td(style='width:8%;')
+															input.i-checks(type='checkbox', unchecked='', name='input[]', id='cr_checkbox'+i)
+															input(type='hidden', id='cr_name'+i, value=company.properties.name)
+														td 
+															a(href='javascript:onClickCompanyDetails("'+ company.properties.name +'","'+ company.properties.short_description +'","'+ company.properties.profile_image_url +'","'+ company.properties.domain +'","'+ company.properties.homepage_url +'","'+ company.properties.facebook_url +'","'+ company.properties.twitter_url +'","'+ company.properties.linkedin_url +'","'+ company.properties.city_name +'","'+ company.properties.region_name +'","'+ company.properties.country_code +'");') #{company.properties.name}
+											if oc_companies
+												each company, j in oc_companies
+													tr.gradeX
+														td
+															input.i-checks(type='checkbox', unchecked='', name='input[]', id='oc_checkbox'+j)
+															input(type='hidden', id='oc_name'+j, value=company.company.name)
+														td
+															a(href='javascript:onClickCompanyDetails2("' + company.company.name +'","' + company.company.company_type +'","' + company.company.registry_url +'","' + company.company.source.publisher +'","' + company.company.registered_address_in_full+'");')(style='color:#cc00e2') #{company.company.name}
+										tfoot
+											tr
+												td(colspan='5')
+													ul.pagination.pull-right
+									
+							.col-lg-6
+								.panel.panel-default
+									.panel-heading
+										| Preview
+									.panel-body#preview(style='word-wrap:break-word;')
